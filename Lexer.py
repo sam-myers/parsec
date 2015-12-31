@@ -1,6 +1,7 @@
 import logging
 
-from Token import Token, TokenTypes
+from Token import Token
+from TokenTypes import TokenTypes, TOKEN_DICT
 
 
 class Lexer(object):
@@ -44,38 +45,19 @@ class Lexer(object):
 
     def next_token(self):
         while not self.eof:
-            logging.debug('Getting next token')
 
-            if self.current_character.isdigit():
-                self.current_token = Token(TokenTypes.INT, self.parse_integer())
+            if self.current_character in TOKEN_DICT:
+                self.current_token = Token(
+                    TOKEN_DICT[self.current_character]
+                )
+                self.advance()
 
             elif self.current_character.isspace():
                 self.skip_whitespace()
                 continue
 
-            elif self.current_character == TokenTypes.ADD.value:
-                self.current_token = Token(TokenTypes.ADD)
-                self.advance()
-
-            elif self.current_character == TokenTypes.SUB.value:
-                self.current_token = Token(TokenTypes.SUB)
-                self.advance()
-
-            elif self.current_character == TokenTypes.MUL.value:
-                self.current_token = Token(TokenTypes.MUL)
-                self.advance()
-
-            elif self.current_character == TokenTypes.DIV.value:
-                self.current_token = Token(TokenTypes.DIV)
-                self.advance()
-
-            elif self.current_character == TokenTypes.L_PAREN.value:
-                self.current_token = Token(TokenTypes.L_PAREN)
-                self.advance()
-
-            elif self.current_character == TokenTypes.R_PAREN.value:
-                self.current_token = Token(TokenTypes.R_PAREN)
-                self.advance()
+            elif self.current_character.isdigit():
+                self.current_token = Token(TokenTypes.INT, self.parse_integer())
 
             else:
                 self.error('Unrecognized character: {token}'.format(

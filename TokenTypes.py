@@ -13,3 +13,6 @@ class TokenTypes(Enum):
 
     def __str__(self):
         return self.value
+
+
+TOKEN_DICT = {t.value: t for t in TokenTypes}
