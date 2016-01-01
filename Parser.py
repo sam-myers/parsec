@@ -1,6 +1,6 @@
-from AST import *
+from AST import BinOp, Num
 from Lexer import Lexer
-from Token import Token, TokenTypes
+from TokenTypes import TokenTypes
 
 
 class Parser(object):
@@ -13,7 +13,7 @@ class Parser(object):
         return self.__repr__()
 
     def __repr__(self):
-        return '<Interpreter {lexer} {token}>'.format(
+        return '<Parser {lexer} {token}>'.format(
             lexer=self.lexer,
             token=self.lexer.current_token
         )
@@ -30,8 +30,8 @@ class Parser(object):
         self.current_token = self.lexer.next_token()
 
     def parse(self):
-        ast = self.expression()
-        return ast.eval()
+        """Returns the complete Abstract Syntax Tree"""
+        return self.expression()
 
     def expression(self):
         """expression: term ((ADD | SUB) term)*"""
@@ -41,14 +41,15 @@ class Parser(object):
             TokenTypes.ADD,
             TokenTypes.SUB
         ):
+            current_token = self.lexer.current_token
 
-            if self.lexer.current_token.type == TokenTypes.ADD:
+            if current_token.type == TokenTypes.ADD:
                 self.eat(TokenTypes.ADD)
-                node = AddOp(node, self.lexer.current_token, self.term())
+                node = BinOp(node, current_token, self.term())
 
-            elif self.lexer.current_token.type == TokenTypes.SUB:
+            elif current_token.type == TokenTypes.SUB:
                 self.eat(TokenTypes.SUB)
-                node = SubOp(node, self.lexer.current_token, self.term())
+                node = BinOp(node, current_token, self.term())
 
         return node
 
@@ -60,14 +61,15 @@ class Parser(object):
             TokenTypes.MUL,
             TokenTypes.DIV
         ):
+            current_token = self.lexer.current_token
 
-            if self.lexer.current_token.type == TokenTypes.MUL:
+            if current_token.type == TokenTypes.MUL:
                 self.eat(TokenTypes.MUL)
-                node = MulOp(node, self.lexer.current_token, self.factor())
+                node = BinOp(node, current_token, self.factor())
 
-            elif self.lexer.current_token.type == TokenTypes.DIV:
+            elif current_token.type == TokenTypes.DIV:
                 self.eat(TokenTypes.DIV)
-                node = DivOp(node, self.lexer.current_token, self.factor())
+                node = BinOp(node, current_token, self.factor())
 
         return node
 

@@ -27,12 +27,12 @@ def test_invalid_token():
 def test_factor():
     i = Parser('1 2')
 
-    assert i.factor() == Num(Token(TokenTypes.INT, 1))
-    assert i.factor() == Num(Token(TokenTypes.INT, 2))
+    assert i.factor().token.value == 1
+    assert i.factor().token.value == 2
 
 
 def test_str_repr():
     i = Parser('1 + 2')
 
-    assert str(i) == '<Interpreter <Lexer 1[ ]+ 2> <Token type=INT value=1>>'
-    assert repr(i) == '<Interpreter <Lexer 1[ ]+ 2> <Token type=INT value=1>>'
+    assert str(i) == '<Parser <Lexer 1[ ]+ 2> <Token type=INT value=1>>'
+    assert repr(i) == '<Parser <Lexer 1[ ]+ 2> <Token type=INT value=1>>'
