@@ -1,10 +1,9 @@
-import logging
-
+from AST import *
 from Lexer import Lexer
 from Token import Token, TokenTypes
 
 
-class Interpreter(object):
+class Parser(object):
 
     def __init__(self, source_code):
         self.lexer = Lexer(source_code)
@@ -30,12 +29,13 @@ class Interpreter(object):
             ))
         self.current_token = self.lexer.next_token()
 
-    def run(self):
-        return self.expression()
+    def parse(self):
+        ast = self.expression()
+        return ast.eval()
 
     def expression(self):
         """expression: term ((ADD | SUB) term)*"""
-        value = self.term()
+        node = self.term()
 
         while self.lexer.current_token.type in (
             TokenTypes.ADD,
@@ -44,17 +44,17 @@ class Interpreter(object):
 
             if self.lexer.current_token.type == TokenTypes.ADD:
                 self.eat(TokenTypes.ADD)
-                value += self.term()
+                node = AddOp(node, self.lexer.current_token, self.term())
 
             elif self.lexer.current_token.type == TokenTypes.SUB:
                 self.eat(TokenTypes.SUB)
-                value -= self.term()
+                node = SubOp(node, self.lexer.current_token, self.term())
 
-        return value
+        return node
 
     def term(self):
         """term : factor ((MUL | DIV) factor)*"""
-        value = self.factor()
+        node = self.factor()
 
         while self.lexer.current_token.type in (
             TokenTypes.MUL,
@@ -63,13 +63,13 @@ class Interpreter(object):
 
             if self.lexer.current_token.type == TokenTypes.MUL:
                 self.eat(TokenTypes.MUL)
-                value *= self.factor()
+                node = MulOp(node, self.lexer.current_token, self.factor())
 
             elif self.lexer.current_token.type == TokenTypes.DIV:
                 self.eat(TokenTypes.DIV)
-                value /= self.factor()
+                node = DivOp(node, self.lexer.current_token, self.factor())
 
-        return value
+        return node
 
     def factor(self):
         """factor : INTEGER | L_PAREN expression R_PAREN"""
@@ -77,11 +77,11 @@ class Interpreter(object):
 
         if token.type == TokenTypes.INT:
             self.eat(TokenTypes.INT)
-            value = token.value
+            node = Num(token)
 
         elif token.type == TokenTypes.L_PAREN:
             self.eat(TokenTypes.L_PAREN)
-            value = self.expression()
+            node = self.expression()
             self.eat(TokenTypes.R_PAREN)
 
-        return value
+        return node

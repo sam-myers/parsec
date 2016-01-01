@@ -1,52 +1,52 @@
-from Interpreter import Interpreter
+from Parser import Parser
 
 
 def test_addition():
-    assert Interpreter('1 + 3').run() == 4
-    assert Interpreter('0 + 19').run() == 19
-    assert Interpreter('7+7').run() == 14
+    assert Parser('1 + 3').parse() == 4
+    assert Parser('0 + 19').parse() == 19
+    assert Parser('7+7').parse() == 14
 
 
 def test_multi_part_addition():
-    assert Interpreter('1 + 1 + 5').run() == 7
+    assert Parser('1 + 1 + 5').parse() == 7
 
 
 def test_subtraction():
-    assert Interpreter('10 - 6').run() == 4
-    assert Interpreter('0 - 2').run() == -2
+    assert Parser('10 - 6').parse() == 4
+    assert Parser('0 - 2').parse() == -2
 
 
 def test_multi_part_subtraction():
-    assert Interpreter('100 - 10 - 20').run() == 70
+    assert Parser('100 - 10 - 20').parse() == 70
 
 
 def test_multiplication():
-    assert Interpreter('10 * 10').run() == 100
+    assert Parser('10 * 10').parse() == 100
 
 
 def test_multi_part_multiplication():
-    assert Interpreter('2 * 2 * 2').run() == 8
+    assert Parser('2 * 2 * 2').parse() == 8
 
 
 def test_division():
-    assert Interpreter('10 / 5').run() == 2
+    assert Parser('10 / 5').parse() == 2
 
 
 def test_multi_part_division():
-    assert Interpreter('100 / 5 / 4').run() == 5
+    assert Parser('100 / 5 / 4').parse() == 5
 
 
 def test_precedence():
-    assert Interpreter('3 * 5 + 2').run() == 17
-    assert Interpreter('3 + 5 * 2').run() == 13
-    assert Interpreter('14 + 2 * 3 - 6 / 2').run() == 17
+    assert Parser('3 * 5 + 2').parse() == 17
+    assert Parser('3 + 5 * 2').parse() == 13
+    assert Parser('14 + 2 * 3 - 6 / 2').parse() == 17
 
 
 def test_parenthesis():
-    assert Interpreter(
+    assert Parser(
             '7 + 3 * (10 / (12 / (3 + 1) - 1))'
-    ).run() == 22
+    ).parse() == 22
 
-    assert Interpreter(
+    assert Parser(
             '7 + 3 * (10 / (12 / (3 + 1) - 1)) / (2 + 3) - 5 - 3 + (8)'
-    ).run() == 10
+    ).parse() == 10
