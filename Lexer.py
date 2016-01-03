@@ -43,6 +43,11 @@ class Lexer(object):
             return
         self.current_character = self.source_code[self.position]
 
+    def peek(self):
+        if self.position + 1 > len(self.source_code) - 1:
+            return None
+        return self.source_code[self.position + 1]
+
     def next_token(self):
         while not self.eof:
 
@@ -56,8 +61,16 @@ class Lexer(object):
                 self.skip_whitespace()
                 continue
 
-            elif self.current_character.isdigit():
+            elif self.current_character.isdigit() or \
+                    (self.peek() is not None and self.peek().isdigit()):
                 self.current_token = Token(TokenTypes.INT, self.parse_integer())
+
+            # Is is a minus token or a negative?
+            # negative: -[0-9]
+            # minus: -.
+            elif self.current_character == '-':
+                self.current_token = Token(TokenTypes.SUB)
+                self.advance()
 
             else:
                 self.error('Unrecognized character: {token}'.format(
@@ -68,11 +81,15 @@ class Lexer(object):
         return Token(TokenTypes.EOF)
 
     def parse_integer(self):
+        self.multiplier = 1
         digits = ''
+        if self.current_character == '-':
+            self.multiplier = -1
+            self.advance()
         while self.current_character.isdigit():
             digits += self.current_character
             self.advance()
-        return int(digits)
+        return int(digits) * self.multiplier
 
     def skip_whitespace(self):
         while self.current_character is not None and self.current_character.isspace():

@@ -50,3 +50,8 @@ def test_parenthesis():
     assert Interpreter(
             '7 + 3 * (10 / (12 / (3 + 1) - 1)) / (2 + 3) - 5 - 3 + (8)'
     ).run() == 10
+
+
+def test_negative_numbers():
+    assert Interpreter('0 + -1').run() == -1
+    assert Interpreter('10 * -7').run() == -70

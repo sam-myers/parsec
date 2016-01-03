@@ -27,6 +27,25 @@ def test_advance():
     assert repr(lexer) == '<Lexer EOF>'
 
 
+def test_peek():
+    lexer = Lexer('1 + 3')
+
+    assert lexer.peek() == ' '
+    lexer.advance()
+
+    assert lexer.peek() == '+'
+    lexer.advance()
+
+    assert lexer.peek() == ' '
+    lexer.advance()
+
+    assert lexer.peek() == '3'
+    lexer.advance()
+
+    assert lexer.peek() is None
+    lexer.advance()
+
+
 def test_next_token():
     lexer = Lexer('1+ 3')
 
@@ -71,3 +90,11 @@ def test_math_symbols():
     assert lexer.next_token() == Token(TokenTypes.SUB)
     assert lexer.next_token() == Token(TokenTypes.MUL)
     assert lexer.next_token() == Token(TokenTypes.DIV)
+
+
+def test_negative_numbers():
+    lexer = Lexer('-3 * -2')
+
+    assert lexer.next_token() == Token(TokenTypes.INT, -3)
+    assert lexer.next_token() == Token(TokenTypes.MUL)
+    assert lexer.next_token() == Token(TokenTypes.INT, -2)

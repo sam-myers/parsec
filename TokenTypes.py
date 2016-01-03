@@ -4,7 +4,7 @@ from enum import Enum
 class TokenTypes(Enum):
     INT = 'INT'
     ADD = '+'
-    SUB = '-'
+    SUB = 'SUB'
     MUL = '*'
     DIV = '/'
     L_PAREN = '('
