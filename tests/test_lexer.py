@@ -42,7 +42,7 @@ def test_peek():
     assert lexer.peek() == '3'
     lexer.advance()
 
-    assert lexer.peek() is None
+    assert lexer.peek() is ''
     lexer.advance()
 
 
@@ -98,3 +98,9 @@ def test_negative_numbers():
     assert lexer.next_token() == Token(TokenTypes.INT, -3)
     assert lexer.next_token() == Token(TokenTypes.MUL)
     assert lexer.next_token() == Token(TokenTypes.INT, -2)
+
+
+def test_minus_as_final_token_crash():
+    lexer = Lexer('-')
+
+    assert lexer.next_token() == Token(TokenTypes.SUB)

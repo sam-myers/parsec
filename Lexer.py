@@ -45,31 +45,29 @@ class Lexer(object):
 
     def peek(self):
         if self.position + 1 > len(self.source_code) - 1:
-            return None
+            return ''
         return self.source_code[self.position + 1]
 
     def next_token(self):
         while not self.eof:
 
-            if self.current_character in TOKEN_DICT:
-                self.current_token = Token(
-                    TOKEN_DICT[self.current_character]
-                )
-                self.advance()
-
-            elif self.current_character.isspace():
+            if self.current_character.isspace():
                 self.skip_whitespace()
                 continue
-
-            elif self.current_character.isdigit() or \
-                    (self.peek() is not None and self.peek().isdigit()):
-                self.current_token = Token(TokenTypes.INT, self.parse_integer())
 
             # Is is a minus token or a negative?
             # negative: -[0-9]
             # minus: -.
-            elif self.current_character == '-':
-                self.current_token = Token(TokenTypes.SUB)
+            elif self.current_character.isdigit() or \
+                    (self.current_character == '-' and
+                     self.peek().isdigit()):
+
+                self.current_token = Token(TokenTypes.INT, self.parse_integer())
+
+            elif self.current_character in TOKEN_DICT:
+                self.current_token = Token(
+                    TOKEN_DICT[self.current_character]
+                )
                 self.advance()
 
             else:
